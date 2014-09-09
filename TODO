@@ -1,0 +1,51 @@
+Test Gear TODO
+--------------
+
+Loosely written notes...
+
+
+
+
+* Simple testgearctl user interface:
+
+Usage: testgearctl [<options>] [script]
+
+Options:
+  --interactive  Enters interactive mode
+  --help         Display help
+  --version      Display version
+
+If provided the script file will be automatically executed.
+
+
+Ultimately we want to be able to do something like this in the interactive
+prompt with autocompletion support for quick and easy navigation:
+
+> device = connect("191.168.0.42")
+> device.load("fb")
+> = device.fb.version
+0.1
+> = device.fb.description
+Frambuffer test plugin
+> = device.fb.author
+Martin Lund
+> = device.fb.license
+BSD-3
+> device.fb.xres = 1920
+> device.fb.yres = 1080
+> device.fb.xoffset = 0
+> device.fb.yoffset = 0
+> device.fb.open()
+> device.fb.show.image = "/images/test.png"
+> device.fb.show.stretch = "yes"
+> device.fb.show()
+> device.fb.close()
+> device.unload("fb")
+
+The exact same commmands can of course be reused and fired from a test script.
+
+Notice that the connect() call returns connection handles. This allows us to
+connect to multiple Test Gear device servers in the same test script. This will
+be useful in a distributed test configuration where you have multiple test
+devices or instruments at multiple workstations (spectrum analyzers,
+oscilloscopes, voltage meters, actuators, sensors, etc.).
