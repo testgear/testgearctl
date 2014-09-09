@@ -18,6 +18,8 @@
 typedef enum {
   TM_INDEX,
   TM_NEWINDEX,
+  TM_WRITEINDEX,
+  TM_READINDEX,
   TM_GC,
   TM_MODE,
   TM_LEN,

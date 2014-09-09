@@ -1,0 +1,53 @@
+diff --git a/src/ltm.c b/src/ltm.c
+index 69b4ed7..e2636e5 100644
+--- a/src/ltm.c
++++ b/src/ltm.c
+@@ -32,6 +32,7 @@ LUAI_DDEF const char *const luaT_typenames_[LUA_TOTALTAGS] = {
+ void luaT_init (lua_State *L) {
+   static const char *const luaT_eventname[] = {  /* ORDER TM */
+     "__index", "__newindex",
++    "__writeindex", "__readindex",
+     "__gc", "__mode", "__len", "__eq",
+     "__add", "__sub", "__mul", "__div", "__mod",
+     "__pow", "__unm", "__lt", "__le",
+diff --git a/src/ltm.h b/src/ltm.h
+index 7f89c84..09892b2 100644
+--- a/src/ltm.h
++++ b/src/ltm.h
+@@ -18,6 +18,8 @@
+ typedef enum {
+   TM_INDEX,
+   TM_NEWINDEX,
++  TM_WRITEINDEX,
++  TM_READINDEX,
+   TM_GC,
+   TM_MODE,
+   TM_LEN,
+diff --git a/src/lvm.c b/src/lvm.c
+index 141b9fd..54b446a 100644
+--- a/src/lvm.c
++++ b/src/lvm.c
+@@ -116,6 +116,11 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
+       const TValue *res = luaH_get(h, key); /* do a primitive get */
+       if (!ttisnil(res) ||  /* result is not nil? */
+           (tm = fasttm(L, h->metatable, TM_INDEX)) == NULL) { /* or no TM? */
++        if ((tm = fasttm(L, h->metatable, TM_READINDEX)) != NULL)
++        {
++            callTM(L, tm, t, key, val, 1);
++            return;
++        }
+         setobj2s(L, val, res);
+         return;
+       }
+@@ -151,6 +156,11 @@ void luaV_settable (lua_State *L, const TValue *t, TValue *key, StkId val) {
+             always true; we only need the assignment.) */
+          (oldval = luaH_newkey(L, h, key), 1)))) {
+         /* no metamethod and (now) there is an entry with given key */
++        if ((tm = fasttm(L, h->metatable, TM_WRITEINDEX)) != NULL)
++        {
++            callTM(L, tm, t, key, val, 0);
++            return;
++        }
+         setobj2t(L, oldval, val);  /* assign new value to that entry */
+         invalidateTMcache(h);
+         luaC_barrierback(L, obj2gco(h), val);

@@ -116,6 +116,11 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
       const TValue *res = luaH_get(h, key); /* do a primitive get */
       if (!ttisnil(res) ||  /* result is not nil? */
           (tm = fasttm(L, h->metatable, TM_INDEX)) == NULL) { /* or no TM? */
+        if ((tm = fasttm(L, h->metatable, TM_READINDEX)) != NULL)
+        {
+            callTM(L, tm, t, key, val, 1);
+            return;
+        }
         setobj2s(L, val, res);
         return;
       }
@@ -151,6 +156,11 @@ void luaV_settable (lua_State *L, const TValue *t, TValue *key, StkId val) {
             always true; we only need the assignment.) */
          (oldval = luaH_newkey(L, h, key), 1)))) {
         /* no metamethod and (now) there is an entry with given key */
+        if ((tm = fasttm(L, h->metatable, TM_WRITEINDEX)) != NULL)
+        {
+            callTM(L, tm, t, key, val, 0);
+            return;
+        }
         setobj2t(L, oldval, val);  /* assign new value to that entry */
         invalidateTMcache(h);
         luaC_barrierback(L, obj2gco(h), val);
