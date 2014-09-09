@@ -39,7 +39,7 @@ static int connect(lua_State *L)
     int cd;
     const char *name = lua_tostring(L, 1);
     printf("Connecting to %s\n", name);
-   
+
     // Connect to Test Gear server
     cd = tg_connect(name);
 
@@ -54,7 +54,7 @@ static int disconnect(lua_State *L)
     int result;
     int cd = lua_tointeger(L, 1);
     printf("Disconnecting...\n");
-   
+
     // Disconnect from server
     result = tg_disconnect(cd);
 

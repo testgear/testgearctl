@@ -11,7 +11,7 @@ LIBS=-L../../libtestgear/src -llua5.2 ../../libtestgear/src/libtestgear.a
 
 all: testgear-lua.so
 
-testgear-lua.so: testgear.c
+testgear-lua.so: testgear-lua.c
 	$(CC) $(CFLAGS) $(INCLUDE) $^ $(LIBS) -o $@
 
 clean:
