@@ -17,4 +17,5 @@ require("testgear")
 
 device = connect("127.0.0.1")
 device.load("shell")
-print(device.shell)
+print(device.shell.command)
+device.shell.run_command()
