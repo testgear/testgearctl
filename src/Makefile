@@ -2,17 +2,23 @@
 # testgear-lua.so - Test Gear lua module
 #
 
-VERSION=0.1alpha
+VERSION=0.2alpha
 
 CC=gcc
 CFLAGS=-Wall -shared -fPIC -DVERSION=\"$(VERSION)\" -Wno-unused-variable -Wno-unused-function
-INCLUDE=-I../../libtestgear/src/include -I/usr/include/lua5.2
-LIBS=-L../../libtestgear/src -llua5.2 ../../libtestgear/src/libtestgear.a
+INCLUDE=-I../../libtestgear/src/include -Ilua-5.2.3/install/include
+LIBS=-L../../libtestgear/src -Llua-5.2.3/install/lib/liblua.a ../../libtestgear/src/libtestgear.a
 
-all: testgear-lua.so
+all: lua testgear-lua.so
+
+lua:
+	make -C lua-5.2.3 linux local
 
 testgear-lua.so: testgear-lua.c
 	$(CC) $(CFLAGS) $(INCLUDE) $^ $(LIBS) -o $@
 
 clean:
 	rm -f *.so
+	make -C lua-5.2.3 clean
+
+.PHONY: lua
