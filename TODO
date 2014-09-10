@@ -4,19 +4,33 @@ Test Gear TODO
 Loosely written notes...
 
 
+testgearctl user interface
+--------------------------
 
-
-* Simple testgearctl user interface:
+Proposed commandline interface:
 
 Usage: testgearctl [<options>] [script]
 
 Options:
-  --interactive  Enters interactive mode
+  --interactive  Enter interactive mode
   --help         Display help
   --version      Display version
 
-If provided the script file will be automatically executed.
+If provided the script file will be executed.
 
+If a script file is provided in combination with interactive mode then
+testgearctl will enter interactive mode after executing the script.
+
+
+testgearctl script language
+---------------------------
+
+Test Gear scripts will be written in Lua.
+
+Lua is a powerful, fast, lightweight, embeddable scripting language.
+
+The script language and the Test Gear API will be available in interactive
+mode.
 
 Ultimately we want to be able to do something like this in the interactive
 prompt with autocompletion support for quick and easy navigation:
@@ -42,7 +56,7 @@ BSD-3
 > device.fb.close()
 > device.unload("fb")
 
-The exact same commmands can of course be reused and fired from a test script.
+The same commmands can be reused and fired from a script.
 
 Notice that the connect() call returns connection handles. This allows us to
 connect to multiple Test Gear device servers in the same test script. This will
