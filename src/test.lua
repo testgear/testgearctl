@@ -1,11 +1,6 @@
-#!lua-5.2.3/src/lua -i
-
 --
 -- Test Gear test script
 --
-
--- Include Test Gear API
-require("testgear")
 
 -- First test case (TODO):
 --  device = connect("127.0.0.1")
