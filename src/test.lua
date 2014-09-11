@@ -6,11 +6,12 @@
 --  device = connect("127.0.0.1")
 --  device.load("shell")
 --  device.shell.command = "touch bla.txt"
---  device.shell.command()
+--  print(device.shell.command)
+--  device.shell.run_command()
 --  device.unload("shell")
 --  disconnect(device)
 
 device = connect("127.0.0.1")
 device.load("shell")
-print(device.shell.command)
-device.shell.run_command()
+device.unload("shell")
+disconnect(device)
