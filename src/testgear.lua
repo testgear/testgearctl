@@ -10,6 +10,9 @@ require("testgear-lua")
 -- Print version
 print("testgearctl v0.2alpha\n")
 
+-- Disable debug module
+debug=nil
+
 -- API functions
 
 function connect (hostname)
