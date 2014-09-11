@@ -1,4 +1,4 @@
-#!lua-5.2.3/src/lua
+#!lua-5.2.3/install/bin/lua
 
 --
 -- Test Gear lua module test script
