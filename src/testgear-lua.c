@@ -32,13 +32,14 @@
 #include <lauxlib.h>
 #include <lualib.h>
 #include "testgear/testgear.h"
+#include "testgear/debug.h"
 
 // lua: handle = tg_connect(name)
 static int connect(lua_State *L)
 {
     int cd;
     const char *name = lua_tostring(L, 1);
-    printf("Connecting to %s\n", name);
+    debug_printf("Connecting to %s\n", name);
 
     // Connect to Test Gear server
     cd = tg_connect(name);
@@ -53,7 +54,7 @@ static int disconnect(lua_State *L)
 {
     int result;
     int cd = lua_tointeger(L, 1);
-    printf("Disconnecting...\n");
+    debug_printf("Disconnecting...\n");
 
     // Disconnect from server
     result = tg_disconnect(cd);
@@ -69,7 +70,7 @@ static int load(lua_State *L)
     int result;
     int cd = lua_tointeger(L, 1);
     const char *name = lua_tostring(L, 2);
-    printf("Loading %s (%d)\n", name, cd);
+    debug_printf("Loading %s (%d)\n", name, cd);
 
     // Load Test Gear plugin
     result = tg_plugin_load(cd, name);
@@ -85,7 +86,7 @@ static int unload(lua_State *L)
     int result;
     int cd = lua_tointeger(L, 1);
     const char *name = lua_tostring(L, 2);
-    printf("Unloading %s\n", name);
+    debug_printf("Unloading %s\n", name);
 
     // Unload Test Gear plugin
     result = tg_plugin_unload(cd, name);
