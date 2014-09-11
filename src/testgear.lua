@@ -72,7 +72,26 @@ function connect (hostname)
     return self
 end
 
+local function destroy(table)
+    local table_name
+
+    assert(type(table)=="table", "Not a table")
+
+    -- Find table in globals
+    for key, value in pairs(_ENV) do
+        if value == table then
+            table_name = key
+            break
+        end
+    end
+
+    -- Destroy table
+    _G[table_name] = nil
+    collectgarbage()
+end
+
 function disconnect (handle)
     tg_disconnect(handle.handle)
     print("Disconnecting")
+    destroy(handle)
 end
