@@ -41,14 +41,14 @@ function connect (hostname)
         end,
     }
 
-    print("Connecting to " .. hostname)
+    print("Connected to " .. hostname)
     self.handle = tg_connect(hostname)
 --    if ((self["con"] = tg_connect(hotname)) ~= OK) then
 --        error("Could not connect")
 --    end
 
     function self.load (name)
-        print("Loading " .. name .. " plugin")
+        print("Loaded " .. name .. " plugin")
         tg_load(handle, name)
 
         -- Create table for this plugin
@@ -64,9 +64,8 @@ function connect (hostname)
     end
 
     function self.unload (name)
-        print("Unloading " .. name .. " plugin")
+        print("Unloaded " .. name .. " plugin")
         tg_unload(handle, name)
-
     end
 
     return self
@@ -92,6 +91,6 @@ end
 
 function disconnect (handle)
     tg_disconnect(handle.handle)
-    print("Disconnecting")
     destroy(handle)
+    print("Disconnected")
 end
