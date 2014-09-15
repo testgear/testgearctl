@@ -31,6 +31,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <string.h>
 #include "testgear/testgear.h"
 #include "testgear/debug.h"
 
@@ -59,7 +60,7 @@ static int disconnect(lua_State *L)
     // Disconnect from server
     result = tg_disconnect(cd);
 
-    // Return success
+    // Return result
     lua_pushnumber(L, result);
     return 1;
 }
@@ -75,7 +76,7 @@ static int load(lua_State *L)
     // Load Test Gear plugin
     result = tg_plugin_load(cd, name);
 
-    // Return success
+    // Return result
     lua_pushnumber(L, result);
     return 1;
 }
@@ -91,7 +92,7 @@ static int unload(lua_State *L)
     // Unload Test Gear plugin
     result = tg_plugin_unload(cd, name);
 
-    // Return success
+    // Return result
     lua_pushnumber(L, result);
     return 1;
 }
@@ -155,6 +156,20 @@ static int plugin_list_properties(lua_State *L)
     return 0;
 }
 
+// lua: string = tg_error()
+static int error(lua_State *L)
+{
+    char error[256] = "Unknown error occured\n";
+
+    if (strlen(tg_error) != 0)
+        strcpy(error, tg_error);
+
+    // Return error string
+    lua_pushstring(L, error);
+
+    return 1;
+}
+
 int luaopen_testgear(lua_State *L)
 {
     lua_register(L, "tg_connect", connect);
@@ -164,5 +179,6 @@ int luaopen_testgear(lua_State *L)
     lua_register(L, "tg_unload", unload);
     lua_register(L, "tg_plugin_list_properties", plugin_list_properties);
     lua_register(L, "tg_get_string", get_string);
+    lua_register(L, "tg_error", error);
     return 0;
 }

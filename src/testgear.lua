@@ -16,6 +16,7 @@ debug=nil
 -- API functions
 
 function connect (hostname)
+    -- Metatable
     local self =
     {
         __index = function (t,k)
@@ -42,21 +43,30 @@ function connect (hostname)
     }
 
     print("Connected to " .. hostname)
-    self.handle = tg_connect(hostname)
---    if ((self["con"] = tg_connect(hotname)) ~= OK) then
---        error("Could not connect")
---    end
+    self._handle = tg_connect(hostname)
 
     function self.load (name)
-        print("Loaded " .. name .. " plugin")
-        tg_load(handle, name)
+        local status
 
-        -- Create table for this plugin
+        if (type(name) ~= "string") then
+            print("Error: Plugin name must be a string")
+            return -1
+        end
+
+        status = tg_load(_handle, name)
+        if (status < 0) then
+            print("Error: " .. tg_error())
+            return -1
+        end
+
+        print("Loaded " .. name .. " plugin")
+
+        -- Add property table
         self[name] = {}
-        -- Watch plugin table events
+        -- Watch property events
         setmetatable(self[name], self)
 
-        -- Populate plugin table with plugin vars/functions
+        -- Populate property table with plugin vars/functions
 --        self[name].command = "touch bla.txt"
 --        self[name].run_command = function ()
 --            print("Running " .. self[name].command)
@@ -64,8 +74,28 @@ function connect (hostname)
     end
 
     function self.unload (name)
+        local status
+        if (type(name) ~= "string") then
+            print("Error: Plugin name must be a string")
+            return -1
+        end
+
+        status = tg_unload(_handle, name)
+        if (status < 0) then
+            print("Error: " .. tg_error())
+            return -1
+        end
+
+        -- Delete property table
+        self[name] = nil
+
         print("Unloaded " .. name .. " plugin")
-        tg_unload(handle, name)
+    end
+
+    function self.list_plugins()
+        local plugins
+        plugins = tg_list_plugins(_handle)
+        print("Available plugins: " .. plugins)
     end
 
     return self
@@ -86,11 +116,11 @@ local function destroy(table)
 
     -- Destroy table
     _G[table_name] = nil
-    collectgarbage()
+    collectgarbage() -- Remove if too heavy
 end
 
 function disconnect (handle)
-    tg_disconnect(handle.handle)
+    tg_disconnect(handle._handle)
     destroy(handle)
     print("Disconnected")
 end
