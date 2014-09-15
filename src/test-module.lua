@@ -11,9 +11,17 @@ require("testgear")
 -- Connect to Test Gear device server
 device = tg_connect("127.0.0.1")
 
+-- List available plugins
+plugins = tg_list_plugins(device)
+print("Avaiable plugins: " .. plugins)
+
 -- Load shell plugin
 result = tg_load(device, "shell")
 print(result)
+
+-- List properties for plugin
+properties = tg_plugin_list_properties(device, "shell")
+print("Properties for shell: " .. properties)
 
 -- Query general plugin information
 version = tg_get_string(device, "shell.version")

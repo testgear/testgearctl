@@ -102,7 +102,7 @@ static int get_string(lua_State *L)
     int result;
     int cd = lua_tointeger(L, 1);
     const char *name = lua_tostring(L, 2);
-    char string[256];
+    char string[65536] = "";
 
     // Get string
     result = tg_get_string(cd, name, (char *) &string);
@@ -116,17 +116,53 @@ static int get_string(lua_State *L)
     return 0;
 }
 
+// lua: string = tg_list_plugins(handle)
+static int list_plugins(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    char string[65536] = "";
 
+    // Get string
+    result = tg_list_plugins(cd, (char *) &string);
 
-// lua: tg_get_string(handle, name)
+    if (result == 0)
+    {
+        // Return string result
+        lua_pushstring(L, string);
+        return 1;
+    }
+    return 0;
+}
 
+// lua: string = tg_plugin_list_properties(handle, name)
+static int plugin_list_properties(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    char string[65536] = "";
+
+    // Get string
+    result = tg_plugin_list_properties(cd, name, (char *) &string);
+
+    if (result == 0)
+    {
+        // Return string result
+        lua_pushstring(L, string);
+        return 1;
+    }
+    return 0;
+}
 
 int luaopen_testgear(lua_State *L)
 {
     lua_register(L, "tg_connect", connect);
     lua_register(L, "tg_disconnect", disconnect);
+    lua_register(L, "tg_list_plugins", list_plugins);
     lua_register(L, "tg_load", load);
     lua_register(L, "tg_unload", unload);
+    lua_register(L, "tg_plugin_list_properties", plugin_list_properties);
     lua_register(L, "tg_get_string", get_string);
     return 0;
 }
