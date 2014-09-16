@@ -7,14 +7,15 @@
 --
 
 -- First test case (TODO):
---  device = connect("127.0.0.1")
---  device.load("shell")
---  device.shell.command = "touch bla.txt"
---  device.shell.run_command()
---  device.unload("shell")
---  disconnect(device)
+-- device = connect("127.0.0.1")
+-- device.load("dummy")
+-- device.dummy.string0 = "Hello world!"
+-- device.dummy.command0()
+-- device.unload("dummy")
+-- disconnect(device)
 
 device = connect("127.0.0.1")
-device.load("shell")
-device.unload("shell")
-disconnect(device)
+device.load("dummy")
+
+--device.unload("dummy")
+--disconnect(device)
