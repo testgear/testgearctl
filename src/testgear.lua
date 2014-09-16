@@ -30,23 +30,56 @@ function connect (hostname)
         end,
 
         __writeindex = function (t,k,v)
-            rawset(t,k,v)
-            print("wrote preexisting variable " .. k)
+            if (k ~= "_type") and (k ~= "_name") and (k ~= "_parent") then
+                local handle = t._parent._handle
+                local name = t._name .. "." .. k
+                local var_type = t._type[k]
+
+                if (type(rawget(t,k)) == "function") then
+--                    print("wrote preexisting function " .. k)
+                else
+--                    print("wrote preexisting variable " .. k)
+                    if (var_type == "char") then
+                        tg_set_char(handle, name, v)
+                    elseif (var_type == "short") then
+                        tg_set_short(handle, name, v)
+                    elseif (var_type == "int") then
+                        tg_set_int(handle, name, v)
+                    elseif (var_type == "float") then
+                        tg_set_float(handle, name, v)
+                    elseif (var_type == "string") then
+                        tg_set_string(handle, name, v)
+                    end
+                end
+            end
+--            rawset(t,k,v)
         end,
 
         __readindex = function (t,k)
             local result = 0
             if (k ~= "_type") and (k ~= "_name") and (k ~= "_parent") then
+                local handle = t._parent._handle
+                local name = t._name .. "." .. k
+                local var_type = t._type[k]
+
                 if (type(rawget(t,k)) == "function") then
-                    print("read preexisting function " .. k)
-                    local name = t._name .. "." .. k
-                    local handle = t._parent._handle
+--                    print("read preexisting function " .. k)
                     result = tg_run(handle, name)
 --                    print(result)
---                    rawset(t,k,v)
---                    print(result)
+--                    return result
                 else
-                    print("read preexisting variable " .. k)
+--                    print("read preexisting variable " .. k)
+                    if (var_type == "char") then
+                        return (tg_get_char(handle, name))
+                    elseif (var_type == "short") then
+                        return (tg_get_short(handle, name))
+                    elseif (var_type == "int") then
+                        return (tg_get_int(handle, name))
+                    elseif (var_type == "float") then
+                        return (tg_get_float(handle, name))
+                    elseif (var_type == "string") then
+                        return (tg_get_string(handle, name))
+                    end
                 end
             end
             return rawget(t,k)
