@@ -27,6 +27,13 @@ print("Properties for shell: " .. properties)
 version = tg_get_string(device, "shell.version")
 print("Plugin version: " .. version)
 
+-- Set command
+tg_set_string(device, "shell.command", "touch blabla.txt")
+
+-- Run command
+result = tg_run(device, "shell.run")
+print(result)
+
 -- Unload shell plugin
 result = tg_unload(device, "shell")
 print(result)

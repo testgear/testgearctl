@@ -117,6 +117,23 @@ static int get_string(lua_State *L)
     return 0;
 }
 
+// lua: string = tg_set_string(handle, name, value)
+static int set_string(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    const char *string = lua_tostring(L, 3);
+
+    // Set string
+    result = tg_set_string(cd, name, (char *) string);
+
+    if (result != 0)
+        luaL_error(L, "tg_set_string() failed (%s)", tg_error);
+
+    return 0;
+}
+
 // lua: string = tg_list_plugins(handle)
 static int list_plugins(lua_State *L)
 {
@@ -195,6 +212,7 @@ int luaopen_testgear(lua_State *L)
     lua_register(L, "tg_unload", unload);
     lua_register(L, "tg_plugin_list_properties", plugin_list_properties);
     lua_register(L, "tg_get_string", get_string);
+    lua_register(L, "tg_set_string", set_string);
     lua_register(L, "tg_run", run);
     lua_register(L, "tg_error", error);
     return 0;
