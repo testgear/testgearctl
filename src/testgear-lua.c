@@ -170,6 +170,22 @@ static int error(lua_State *L)
     return 1;
 }
 
+// lua: tg_run(handle, name)
+static int run(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    debug_printf("Run %s\n", name);
+
+    // Unload Test Gear plugin
+    tg_run(cd, name, &result);
+
+    // Return result
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 int luaopen_testgear(lua_State *L)
 {
     lua_register(L, "tg_connect", connect);
@@ -179,6 +195,7 @@ int luaopen_testgear(lua_State *L)
     lua_register(L, "tg_unload", unload);
     lua_register(L, "tg_plugin_list_properties", plugin_list_properties);
     lua_register(L, "tg_get_string", get_string);
+    lua_register(L, "tg_run", run);
     lua_register(L, "tg_error", error);
     return 0;
 }
