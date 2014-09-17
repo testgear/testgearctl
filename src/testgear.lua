@@ -45,8 +45,12 @@ function connect (hostname)
                         tg_set_short(handle, name, v)
                     elseif (var_type == "int") then
                         tg_set_int(handle, name, v)
+                    elseif (var_type == "long") then
+                        tg_set_long(handle, name, v)
                     elseif (var_type == "float") then
                         tg_set_float(handle, name, v)
+                    elseif (var_type == "double") then
+                        tg_set_double(handle, name, v)
                     elseif (var_type == "string") then
                         tg_set_string(handle, name, v)
                     end
@@ -75,8 +79,12 @@ function connect (hostname)
                         return (tg_get_short(handle, name))
                     elseif (var_type == "int") then
                         return (tg_get_int(handle, name))
+                    elseif (var_type == "long") then
+                        return (tg_get_long(handle, name))
                     elseif (var_type == "float") then
                         return (tg_get_float(handle, name))
+                    elseif (var_type == "double") then
+                        return (tg_get_double(handle, name))
                     elseif (var_type == "string") then
                         return (tg_get_string(handle, name))
                     end
@@ -141,14 +149,20 @@ function connect (hostname)
                 self[name]._type[word[1]] = "int"
             elseif (word[2] == "3") then
                 self[name][word[1]] = 0
-                self[name]._type[word[1]] = "float"
+                self[name]._type[word[1]] = "long"
             elseif (word[2] == "4") then
+                self[name][word[1]] = 0
+                self[name]._type[word[1]] = "float"
+            elseif (word[2] == "5") then
+                self[name][word[1]] = 0
+                self[name]._type[word[1]] = "double"
+            elseif (word[2] == "6") then
                 self[name][word[1]] = ""
                 self[name]._type[word[1]] = "string"
-            elseif (word[2] == "5") then
+            elseif (word[2] == "7") then
                 self[name][word[1]] = ""
                 self[name]._type[word[1]] = "data"
-            elseif (word[2] == "6") then
+            elseif (word[2] == "8") then
                 self[name][word[1]] = function () end
                 self[name]._type[word[1]] = "command"
             end

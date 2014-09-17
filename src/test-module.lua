@@ -49,12 +49,26 @@ tg_set_int(device, "dummy.int0", 424242)
 int0 = tg_get_int(device, "dummy.int0")
 print("int0 = " .. int0)
 
+-- Set long
+tg_set_long(device, "dummy.long0", 4242424242)
+
+-- Get long
+long0 = tg_get_long(device, "dummy.long0")
+print("long0 = " .. long0)
+
 -- Set float
 tg_set_float(device, "dummy.float0", 42.42)
 
 -- Get float
 float0 = tg_get_float(device, "dummy.float0")
 print("float0 = " .. float0)
+
+-- Set double
+tg_set_double(device, "dummy.double0", 42.4242424242)
+
+-- Get double
+double0 = tg_get_double(device, "dummy.double0")
+print("double0 = " .. double0)
 
 -- Set string
 tg_set_string(device, "dummy.string0", "Hello world!")

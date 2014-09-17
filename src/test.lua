@@ -17,13 +17,17 @@ if (true) then
     print(device.dummy.short0)
     device.dummy.int0 = 424242
     print(device.dummy.int0)
-    device.dummy.float0 = 42.42
+    device.dummy.long0 = 4242424242
+    print(device.dummy.long0)
+    device.dummy.float0 = 42.424242
     print(device.dummy.float0)
+    device.dummy.double0 = 42.4242424242
+    print(device.dummy.double0)
     device.dummy.string0 = "Hello world!"
     print(device.dummy.string0)
     device.dummy.command0()
-    device.unload("dummy")
-    disconnect(device)
+--    device.unload("dummy")
+--    disconnect(device)
 end
 
 --device = connect("127.0.0.1")

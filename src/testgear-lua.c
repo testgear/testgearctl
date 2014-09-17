@@ -208,6 +208,43 @@ static int set_int(lua_State *L)
     return 0;
 }
 
+// lua: number = tg_get_long(handle, name)
+static int get_long(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    long value;
+
+    // Get long
+    result = tg_get_long(cd, name, &value);
+    if (result == 0)
+    {
+        // Return long result
+        lua_pushnumber(L, value);
+        return 1;
+    }
+
+    return 0;
+}
+
+// lua: tg_set_long(handle, name, value)
+static int set_long(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    const long value = lua_tointeger(L, 3);
+
+    // Set long
+    result = tg_set_long(cd, name, value);
+
+    if (result != 0)
+        luaL_error(L, "tg_set_long() failed (%s)", tg_error);
+
+    return 0;
+}
+
 // lua: number = tg_get_float(handle, name)
 static int get_float(lua_State *L)
 {
@@ -241,6 +278,43 @@ static int set_float(lua_State *L)
 
     if (result != 0)
         luaL_error(L, "tg_set_float() failed (%s)", tg_error);
+
+    return 0;
+}
+
+// lua: number = tg_get_double(handle, name)
+static int get_double(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    double value;
+
+    // Get double
+    result = tg_get_double(cd, name, &value);
+    if (result == 0)
+    {
+        // Return double result
+        lua_pushnumber(L, value);
+        return 1;
+    }
+
+    return 0;
+}
+
+// lua: tg_set_double(handle, name, value)
+static int set_double(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    const double value = lua_tonumber(L, 3);
+
+    // Set double
+    result = tg_set_double(cd, name, value);
+
+    if (result != 0)
+        luaL_error(L, "tg_set_double() failed (%s)", tg_error);
 
     return 0;
 }
@@ -365,8 +439,12 @@ int luaopen_testgear(lua_State *L)
     lua_register(L, "tg_set_short", set_short);
     lua_register(L, "tg_get_int", get_int);
     lua_register(L, "tg_set_int", set_int);
+    lua_register(L, "tg_get_long", get_long);
+    lua_register(L, "tg_set_long", set_long);
     lua_register(L, "tg_get_float", get_float);
     lua_register(L, "tg_set_float", set_float);
+    lua_register(L, "tg_get_double", get_double);
+    lua_register(L, "tg_set_double", set_double);
     lua_register(L, "tg_get_string", get_string);
     lua_register(L, "tg_set_string", set_string);
     lua_register(L, "tg_run", run);
