@@ -28,40 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <limits.h>
-#include "testgear/options.h"
-#include "testgear/debug.h"
-#include "testgear/fileparser.h"
+#ifndef FILEPARSER_H
+#define FILEPARSER_H
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
-#include "prompt.h"
 
+int parse_file(char *filename, lua_State *L);
 
-int main(int argc, char *argv[])
-{
-    char command[_POSIX_ARG_MAX];
-    lua_State *L;
-
-    L = luaL_newstate();
-    luaL_openlibs(L);
-
-    debug_printf("testgearctl v%s\n", VERSION);
-    debug_printf("\n");
-
-    // Parse options
-    parse_options(argc, argv);
-
-    // Parse script file if provided
-    if (strlen(options.filename) > 0)
-        parse_file(options.filename, L);
-
-    // Enter interactive mode if requested
-    if (options.interactive)
-        luap_enter(L);
-
-    return 0;
-}
+#endif

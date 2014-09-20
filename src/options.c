@@ -42,6 +42,7 @@
 struct options_t options =
 {
     false,
+    false,
     "",
 };
 
@@ -50,9 +51,10 @@ void print_options_help(char *argv[])
     printf("Usage: %s [<options>] [script]\n", argv[0]);
     printf("\n");
     printf("Options:\n");
-    printf("  --interactive  Enter interactive mode\n");
-    printf("  --version      Display version\n");
-    printf("  --help         Display help\n");
+    printf("  --interactive      Enable interactive mode\n");
+    printf("  --stop-on-failure  Stop on failure\n");
+    printf("  --version          Display version\n");
+    printf("  --help             Display help\n");
     printf("\n");
 }
 
@@ -70,10 +72,11 @@ void parse_options(int argc, char *argv[])
     {
         static struct option long_options[] =
         {
-            {"interactive",	no_argument, 0, 'i'},
-            {"version",	    no_argument, 0, 'v'},
-            {"help",        no_argument, 0, 'h'},
-            {0,             0,           0,  0 }
+            {"interactive",	    no_argument, 0, 'i'},
+            {"stop-on-failure",	no_argument, 0, 's'},
+            {"version",	        no_argument, 0, 'v'},
+            {"help",            no_argument, 0, 'h'},
+            {0,                 0,           0,  0 }
         };
 
         // getopt_long stores the option index here
@@ -102,6 +105,10 @@ void parse_options(int argc, char *argv[])
                 options.interactive = true;
                 break;
 
+            case 's':
+                options.stop_on_failure = true;
+                break;
+
             case 'v':
                 printf("testgearctl v%s\n", VERSION);
                 exit(0);
@@ -122,9 +129,9 @@ void parse_options(int argc, char *argv[])
         }
     }
 
-    // Assume first non-option is the script file
+    // Assume first non-option is the script filename
     if (optind < argc)
-        strcpy(options.file, argv[optind++]);
+        strcpy(options.filename, argv[optind++]);
 
     // Print any remaining command line arguments (unknown options)
     if (optind < argc)

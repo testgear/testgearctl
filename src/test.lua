@@ -6,6 +6,7 @@
 -- ./testgearctl --interactive ./test.lua
 --
 
+-- tg
 -- Dummy test case
 if (true) then
     device = connect("127.0.0.1")
@@ -30,6 +31,7 @@ if (true) then
 --    disconnect(device)
 end
 
+-- tg
 --device = connect("127.0.0.1")
 --device.load("dummy")
 

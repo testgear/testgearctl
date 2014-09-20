@@ -37,7 +37,8 @@
 /* Options */
 struct options_t {
     bool interactive;
-    char file[_POSIX_ARG_MAX];
+    bool stop_on_failure;
+    char filename[_POSIX_ARG_MAX];
 };
 
 extern struct options_t options;
