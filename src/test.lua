@@ -31,9 +31,21 @@ if (true) then
 --    disconnect(device)
 end
 
+if (device.dummy.char0 < 100) then fail() end
+
 -- tg
 --device = connect("127.0.0.1")
 --device.load("dummy")
 
+print("SPAM!")
+
 --device.unload("dummy")
 --disconnect(device)
+
+-- tg
+-- Force a lua error
+- Fail me!
+
+-- tg
+
+print("The end")

@@ -13,6 +13,9 @@ print("testgearctl v0.2alpha\n")
 -- Disable debug module
 debug=nil
 
+-- Initialize fail state
+_fail = false
+
 -- API functions
 
 function connect (hostname)
@@ -222,4 +225,17 @@ function disconnect (handle)
     tg_disconnect(handle._handle)
     destroy(handle)
     print("Disconnected")
+end
+
+function fail ()
+    _fail = true
+end
+
+function _reset_fail ()
+    if (_fail) then
+        _fail = false
+        return 1
+    else
+        return 0
+    end
 end

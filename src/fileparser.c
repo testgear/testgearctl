@@ -43,20 +43,43 @@
 #include <lualib.h>
 #include "prompt.h"
 
+#define ANSI_COLOR_PASS      "\x1b[1;37;42m"
+#define ANSI_COLOR_FAIL      "\x1b[1;37;41m"
+#define ANSI_COLOR_LUA_ERROR "\x1b[1;37;43m"
+#define ANSI_COLOR_LUA_CODE  "\x1b[36m"
+#define ANSI_COLOR_TEST_CASE "\x1b[1;37m"
+#define ANSI_COLOR_RESET     "\x1b[0m"
+
 #define MAX_LINE_SIZE 4096
 #define MAX_CHUNK_SIZE 40960
 
 void process_chunk(lua_State *L, char *chunk, int total_count)
 {
-    static int count = 1;
-    printf("\n==== TEST %d/%d ===\n%s\n", count++, total_count, chunk);
+    char test[40];
+    static int count = 0;
 
-    int status = luaL_loadbuffer(L, chunk, strlen(chunk), "line") ||
+    count++;
+    printf(ANSI_COLOR_TEST_CASE "\n== Test %d/%d ========================================\n\n" ANSI_COLOR_RESET, count, total_count);
+    printf(ANSI_COLOR_LUA_CODE "%s" ANSI_COLOR_RESET, chunk);
+    sprintf(test, "test %d", count);
+
+    int status = luaL_loadbuffer(L, chunk, strlen(chunk), test) ||
         lua_pcall(L, 0, 0, 0);
     if (status > 0)
     {
-        fprintf(stderr, "%s", lua_tostring(L, -1));
+        fprintf(stderr, ANSI_COLOR_RESET "%s\n", lua_tostring(L, -1));
         lua_pop(L, 1);  // pop error message from the stack
+        printf("\n   " ANSI_COLOR_LUA_ERROR " LUA ERROR " ANSI_COLOR_RESET "\n");
+    } else
+    {
+        lua_getglobal(L, "_reset_fail");
+        lua_pcall(L, 0, 1, 0);
+        int fail = lua_tonumber(L, -1);
+
+        if (fail)
+            printf("\n   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+        else
+            printf("\n   " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
     }
 
     // Clear chunk
@@ -137,5 +160,8 @@ int parse_file(char *filename, lua_State *L)
         process_chunk(L, chunk, total_count);
 
     fclose(file);
+
+    printf("\n");
+
     return 0;
 }
