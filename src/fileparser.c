@@ -215,7 +215,7 @@ int parse_file(char *filename, lua_State *L)
     printf("                          TOTAL | PASS | FAIL | LUA ERROR \n");
     printf(" -------------------------------+------+------+-----------\n");
     printf("  Test count                %3d |  %3d |  %3d |       %3d \n", total_count, pass_count, fail_count, lua_error_count);
-    printf(ANSI_COLOR_RESET"\n");
+    printf(ANSI_COLOR_RESET"\n\n");
 
     return 0;
 }
