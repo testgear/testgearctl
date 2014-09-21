@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include "testgear/fileparser.h"
+#include "testgear/options.h"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -81,7 +82,7 @@ static void print_chunk(char *chunk)
     printf("\n");
 }
 
-static void process_chunk(lua_State *L, char *chunk, int total_count)
+static int process_chunk(lua_State *L, char *chunk, int total_count)
 {
     char test[40];
     static int count = 0;
@@ -109,6 +110,8 @@ static void process_chunk(lua_State *L, char *chunk, int total_count)
         {
             printf("\n                                                 " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
             fail_count++;
+            if (options.stop_on_failure)
+                return 1;
         }
         else
         {
@@ -119,6 +122,8 @@ static void process_chunk(lua_State *L, char *chunk, int total_count)
 
     // Clear chunk
     chunk[0] = 0;
+
+    return 0;
 }
 
 int count_tests(FILE *file)
@@ -152,6 +157,7 @@ int parse_file(char *filename, lua_State *L)
     bool new_chunk = false;
     bool first = true;
     int total_count = 0;
+    int fail;
 
     (void) luaL_dofile(L, "testgear.lua");
 
@@ -186,7 +192,11 @@ int parse_file(char *filename, lua_State *L)
 
             // Process chunk
             if (strlen(chunk) > 0)
-                process_chunk(L, chunk, total_count);
+            {
+                fail = process_chunk(L, chunk, total_count);
+                if (fail)
+                    return 1;
+            }
 
             first=false;
         }
