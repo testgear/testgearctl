@@ -53,6 +53,10 @@
 #define MAX_LINE_SIZE 4096
 #define MAX_CHUNK_SIZE 40960
 
+static int fail_count = 0;
+static int pass_count = 0;
+static int lua_error_count = 0;
+
 static void print_chunk(char *chunk)
 {
     int i, j, k;
@@ -94,6 +98,7 @@ static void process_chunk(lua_State *L, char *chunk, int total_count)
         fprintf(stderr, ANSI_COLOR_RESET "%s\n", lua_tostring(L, -1));
         lua_pop(L, 1);  // pop error message from the stack
         printf("\n                                                 " ANSI_COLOR_LUA_ERROR " LUA " ANSI_COLOR_RESET "\n");
+        lua_error_count++;
     } else
     {
         lua_getglobal(L, "_reset_fail");
@@ -101,15 +106,20 @@ static void process_chunk(lua_State *L, char *chunk, int total_count)
         int fail = lua_tonumber(L, -1);
 
         if (fail)
+        {
             printf("\n                                                 " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+            fail_count++;
+        }
         else
+        {
             printf("\n                                                 " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
+            pass_count++;
+        }
     }
 
     // Clear chunk
     chunk[0] = 0;
 }
-
 
 int count_tests(FILE *file)
 {
@@ -152,6 +162,8 @@ int parse_file(char *filename, lua_State *L)
         exit(EXIT_FAILURE);
     }
 
+    printf("Running tests in %s ...\n", filename);
+
     // Count number of tests in file
     total_count = count_tests(file);
 
@@ -186,7 +198,14 @@ int parse_file(char *filename, lua_State *L)
 
     fclose(file);
 
-    printf("\n");
+    // Print summary
+
+    printf(ANSI_COLOR_TEST_CASE "\n== Summary ================================================\n\n\n");
+
+    printf("                          TOTAL | PASS | FAIL | LUA ERROR \n");
+    printf(" -------------------------------+------+------+-----------\n");
+    printf("  Test count                %3d |  %3d |  %3d |       %3d \n", total_count, pass_count, fail_count, lua_error_count);
+    printf(ANSI_COLOR_RESET"\n");
 
     return 0;
 }
