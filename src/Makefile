@@ -18,7 +18,8 @@ debug: all
 
 objects = main.o \
           options.o \
-          fileparser.o
+          fileparser.o \
+		  clock.o
 
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@

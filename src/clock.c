@@ -29,45 +29,41 @@
  */
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <limits.h>
-#include "testgear/options.h"
-#include "testgear/debug.h"
-#include "testgear/fileparser.h"
+#include <time.h>
 #include "testgear/clock.h"
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-#include "prompt.h"
+#include "testgear/colors.h"
 
-int main(int argc, char *argv[])
+static double time_start;
+static double time_stop;
+
+void clock_start(void)
 {
-    char command[_POSIX_ARG_MAX];
-    lua_State *L;
+   struct timespec start;
 
-    // Start clock
-    clock_start();
+   /* Get start clock time */
+   if( clock_gettime( CLOCK_MONOTONIC, &start) == -1 )
+      printf("clock_gettime error\n");
 
-    L = luaL_newstate();
-    luaL_openlibs(L);
+   time_start = start.tv_sec + start.tv_nsec * 0.000000001;
+}
 
-    debug_printf("testgearctl v%s\n", VERSION);
-    debug_printf("\n");
+void clock_stop(void)
+{
+   struct timespec stop;
 
-    // Parse options
-    parse_options(argc, argv);
+   /* Get stop clock time */
+   if( clock_gettime( CLOCK_MONOTONIC, &stop) == -1 )
+      printf("clock_gettime error\n");
 
-    // Parse script file if provided
-    if (strlen(options.filename) > 0)
-        parse_file(options.filename, L);
+   time_stop = stop.tv_sec + stop.tv_nsec * 0.000000001;
+}
 
-    // Enter interactive mode if requested
-    if (options.interactive)
-    {
-        luap_setprompts(L, "testgear>", "testgear>>");
-        luap_enter(L);
-    }
+void show_elapsed_time(void)
+{
+   double seconds = time_stop - time_start;
+   int hours = seconds / 3600;
+   int minutes = (seconds - hours * 3600) / 60;
+   seconds = seconds - hours * 3600 - minutes * 60;
 
-    return 0;
+   printf(" Elapsed time: %2dh %2dm %2.0fs\n\n" ANSI_COLOR_RESET, hours, minutes, seconds);
 }

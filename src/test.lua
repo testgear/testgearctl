@@ -37,8 +37,6 @@ if (device.dummy.char0 < 100) then fail() end
 --device = connect("127.0.0.1")
 --device.load("dummy")
 
-print("SPAM!")
-
 --device.unload("dummy")
 --disconnect(device)
 
@@ -48,4 +46,3 @@ print("SPAM!")
 
 -- tg
 
-print("The end")

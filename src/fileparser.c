@@ -39,17 +39,12 @@
 #include <stdbool.h>
 #include "testgear/fileparser.h"
 #include "testgear/options.h"
+#include "testgear/clock.h"
+#include "testgear/colors.h"
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 #include "prompt.h"
-
-#define ANSI_COLOR_PASS      "\x1b[1;37;42m"
-#define ANSI_COLOR_FAIL      "\x1b[1;37;41m"
-#define ANSI_COLOR_LUA_ERROR "\x1b[1;37;43m"
-#define ANSI_COLOR_LUA_CODE  "\x1b[36m"
-#define ANSI_COLOR_TEST_CASE "\x1b[1;37m"
-#define ANSI_COLOR_RESET     "\x1b[0m"
 
 #define MAX_LINE_SIZE 4096
 #define MAX_CHUNK_SIZE 40960
@@ -195,7 +190,10 @@ int parse_file(char *filename, lua_State *L)
             {
                 fail = process_chunk(L, chunk, total_count);
                 if (fail)
+                {
+                    printf("\n");
                     return 1;
+                }
             }
 
             first=false;
@@ -215,7 +213,13 @@ int parse_file(char *filename, lua_State *L)
     printf("                          TOTAL | PASS | FAIL | LUA ERROR \n");
     printf(" -------------------------------+------+------+-----------\n");
     printf("  Test count                %3d |  %3d |  %3d |       %3d \n", total_count, pass_count, fail_count, lua_error_count);
-    printf(ANSI_COLOR_RESET"\n\n");
+    printf("\n\n");
+
+    // Stop clock
+    clock_stop();
+
+    // Print elapsed time
+    show_elapsed_time();
 
     return 0;
 }

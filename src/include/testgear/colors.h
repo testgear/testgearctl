@@ -28,46 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <limits.h>
-#include "testgear/options.h"
-#include "testgear/debug.h"
-#include "testgear/fileparser.h"
-#include "testgear/clock.h"
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-#include "prompt.h"
+#ifndef COLORS_H
+#define COLORS_H
 
-int main(int argc, char *argv[])
-{
-    char command[_POSIX_ARG_MAX];
-    lua_State *L;
+#define ANSI_COLOR_PASS      "\x1b[1;37;42m"
+#define ANSI_COLOR_FAIL      "\x1b[1;37;41m"
+#define ANSI_COLOR_LUA_ERROR "\x1b[1;37;43m"
+#define ANSI_COLOR_LUA_CODE  "\x1b[36m"
+#define ANSI_COLOR_TEST_CASE "\x1b[1;37m"
+#define ANSI_COLOR_RESET     "\x1b[0m"
 
-    // Start clock
-    clock_start();
-
-    L = luaL_newstate();
-    luaL_openlibs(L);
-
-    debug_printf("testgearctl v%s\n", VERSION);
-    debug_printf("\n");
-
-    // Parse options
-    parse_options(argc, argv);
-
-    // Parse script file if provided
-    if (strlen(options.filename) > 0)
-        parse_file(options.filename, L);
-
-    // Enter interactive mode if requested
-    if (options.interactive)
-    {
-        luap_setprompts(L, "testgear>", "testgear>>");
-        luap_enter(L);
-    }
-
-    return 0;
-}
+#endif
