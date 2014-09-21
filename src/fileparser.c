@@ -51,7 +51,6 @@
 
 static int fail_count = 0;
 static int pass_count = 0;
-static int lua_error_count = 0;
 
 static void print_chunk(char *chunk)
 {
@@ -93,8 +92,8 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
     {
         fprintf(stderr, ANSI_COLOR_RESET "%s\n", lua_tostring(L, -1));
         lua_pop(L, 1);  // pop error message from the stack
-        printf("\n                                                   " ANSI_COLOR_LUA_ERROR " LUA " ANSI_COLOR_RESET "\n");
-        lua_error_count++;
+        printf("\n                                                   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+        fail_count++;
     } else
     {
         lua_getglobal(L, "_reset_fail");
@@ -210,9 +209,9 @@ int parse_file(char *filename, lua_State *L)
 
     printf(ANSI_COLOR_TEST_CASE "\n== Summary ================================================\n\n\n");
 
-    printf("                          TOTAL | PASS | FAIL | LUA ERROR \n");
-    printf(" -------------------------------+------+------+-----------\n");
-    printf("  Test count                %3d |  %3d |  %3d |       %3d \n", total_count, pass_count, fail_count, lua_error_count);
+    printf("                          TOTAL | PASS | FAIL \n");
+    printf(" -------------------------------+------+------\n");
+    printf("  Test count                %3d |  %3d |  %3d \n", total_count, pass_count, fail_count);
     printf("\n\n");
 
     // Stop clock
