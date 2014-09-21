@@ -162,7 +162,7 @@ int parse_file(char *filename, lua_State *L)
         exit(EXIT_FAILURE);
     }
 
-    printf("Running tests in %s ...\n", filename);
+    printf("\nRunning %s ...\n", filename);
 
     // Count number of tests in file
     total_count = count_tests(file);

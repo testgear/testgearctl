@@ -91,8 +91,8 @@ function connect (hostname)
         end
     }
 
-    print("Connected to " .. hostname)
     self._handle = tg_connect(hostname)
+    print("Connected to " .. hostname)
 
     function self.load (name)
         local status
