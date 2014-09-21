@@ -111,6 +111,8 @@ void parse_options(int argc, char *argv[])
 
             case 'v':
                 printf("testgearctl v%s\n", VERSION);
+                printf("Copyright (c) 2012-2014 Martin Lund\n\n");
+                printf("This is open source software. See README for license details.\n");
                 exit(0);
                 break;
 
