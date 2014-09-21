@@ -48,7 +48,7 @@ struct options_t options =
 
 void print_options_help(char *argv[])
 {
-    printf("Usage: %s [<options>] [script]\n", argv[0]);
+    printf("Usage: %s [<options>] [file]\n", argv[0]);
     printf("\n");
     printf("Options:\n");
     printf("  --interactive      Enable interactive mode\n");
