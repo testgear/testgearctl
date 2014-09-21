@@ -191,7 +191,7 @@ function connect (hostname)
     function self.list_plugins()
         local plugins
         plugins = tg_list_plugins(self._handle)
-        print("Available plugins: " .. plugins)
+        print("Available plugins: " .. string.gsub(plugins, ",", " "))
     end
 
     return self
