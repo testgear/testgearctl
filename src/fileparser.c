@@ -209,9 +209,9 @@ int parse_file(char *filename, lua_State *L)
 
     printf(ANSI_COLOR_TEST_CASE "\n== Summary ================================================\n\n\n");
 
-    printf("                          TOTAL | PASS | FAIL \n");
-    printf(" -------------------------------+------+------\n");
-    printf("  Test count                %3d |  %3d |  %3d \n", total_count, pass_count, fail_count);
+    printf("                               TOTAL | PASS | FAIL \n");
+    printf("      -------------------------------+------+------\n");
+    printf("       Test count                %3d |  %3d |  %3d \n", total_count, pass_count, fail_count);
     printf("\n\n");
 
     // Stop clock
