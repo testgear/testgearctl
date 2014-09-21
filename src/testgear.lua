@@ -7,9 +7,6 @@
 -- Include Test Gear lua module
 require("testgear-lua")
 
--- Print version
-print("testgearctl v0.2alpha\n")
-
 -- Initialize fail state
 _fail = false
 
