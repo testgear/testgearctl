@@ -10,9 +10,6 @@ require("testgear-lua")
 -- Print version
 print("testgearctl v0.2alpha\n")
 
--- Disable debug module
-debug=nil
-
 -- Initialize fail state
 _fail = false
 
@@ -228,6 +225,7 @@ function disconnect (handle)
 end
 
 function fail ()
+    print("\n\27[31mFailed at line " .. debug.getinfo(2).currentline .. "\27[m")
     _fail = true
 end
 

@@ -53,14 +53,38 @@
 #define MAX_LINE_SIZE 4096
 #define MAX_CHUNK_SIZE 40960
 
-void process_chunk(lua_State *L, char *chunk, int total_count)
+static void print_chunk(char *chunk)
+{
+    int i, j, k;
+    char line[MAX_LINE_SIZE] = "";
+
+    for (i=0,j=0,k=1; i<strlen(chunk); i++)
+    {
+        if (chunk[i] == '\n')
+        {
+            line[j] = 0;
+            printf(ANSI_COLOR_LUA_CODE "%4d: %s\n" ANSI_COLOR_RESET, k, line);
+            k++;
+            j=0;
+        }
+        else
+        {
+            line[j] = chunk[i];
+            j++;
+        }
+    }
+
+    printf("\n");
+}
+
+static void process_chunk(lua_State *L, char *chunk, int total_count)
 {
     char test[40];
     static int count = 0;
 
     count++;
-    printf(ANSI_COLOR_TEST_CASE "\n== Test %d/%d ========================================\n\n" ANSI_COLOR_RESET, count, total_count);
-    printf(ANSI_COLOR_LUA_CODE "%s" ANSI_COLOR_RESET, chunk);
+    printf(ANSI_COLOR_TEST_CASE "\n== Test %d/%d ===============================================\n\n" ANSI_COLOR_RESET, count, total_count);
+    print_chunk(chunk);
     sprintf(test, "test %d", count);
 
     int status = luaL_loadbuffer(L, chunk, strlen(chunk), test) ||
@@ -69,7 +93,7 @@ void process_chunk(lua_State *L, char *chunk, int total_count)
     {
         fprintf(stderr, ANSI_COLOR_RESET "%s\n", lua_tostring(L, -1));
         lua_pop(L, 1);  // pop error message from the stack
-        printf("\n   " ANSI_COLOR_LUA_ERROR " LUA ERROR " ANSI_COLOR_RESET "\n");
+        printf("\n                                                 " ANSI_COLOR_LUA_ERROR " LUA " ANSI_COLOR_RESET "\n");
     } else
     {
         lua_getglobal(L, "_reset_fail");
@@ -77,14 +101,15 @@ void process_chunk(lua_State *L, char *chunk, int total_count)
         int fail = lua_tonumber(L, -1);
 
         if (fail)
-            printf("\n   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+            printf("\n                                                 " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
         else
-            printf("\n   " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
+            printf("\n                                                 " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
     }
 
     // Clear chunk
     chunk[0] = 0;
 }
+
 
 int count_tests(FILE *file)
 {
