@@ -153,8 +153,6 @@ int parse_file(char *filename, lua_State *L)
     int total_count = 0;
     int fail;
 
-    (void) luaL_dofile(L, "testgear.lua");
-
     file = fopen(filename, "r"); 
     if(file == NULL)
     {
