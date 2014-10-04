@@ -9,7 +9,7 @@ CFLAGS=-Wall -shared -fPIC -DVERSION=\"$(VERSION)\" -Wno-unused-variable -Wno-un
 INCLUDE=-I../../libtestgear/src/include -Ilua-5.2.3/install/include -Iinclude -Iprompt
 #LIBS=-L../../libtestgear/src -Llua-5.2.3/install/lib/liblua.a ../../libtestgear/src/libtestgear.a
 LIBS=lua-5.2.3/install/lib/liblua.a ../../libtestgear/src/libtestgear.a
-PROMPT_FLAGS=-Wextra -Wno-unused-parameter -DHAVE_ASPRINTF -DHAVE_LIBREADLINE -DHAVE_READLINE_READLINE_H -DHAVE_READLINE_HISTORY -DHAVE_READLINE_HISTORY_H -D_GNU_SOURCE
+PROMPT_FLAGS=-Wextra -Wno-unused-parameter -DHAVE_ASPRINTF -DHAVE_LIBREADLINE -DHAVE_READLINE_READLINE_H -DHAVE_READLINE_HISTORY -DHAVE_READLINE_HISTORY_H -D_GNU_SOURCE '-DHIDDEN_KEY_PREFIX="_"' -DALWAYS_APPEND_SUFFIXES
 
 all: lua testgear-lua.so testgearctl
 

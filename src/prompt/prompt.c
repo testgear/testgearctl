@@ -223,16 +223,35 @@ static char *table_key_completions (const char *text, int state)
            lua_pcall (_L, 2, 2, 0) == 0) {
         char *candidate;
         size_t l, m;
-        int nospace;
+        int nospace, type, keytype;
 
         if (lua_isnil(_L, -2)) {
             return NULL;
         }
 
-        /* Pop the value, keep the key. */
+        /* Make some notes about the value we're completing.  We'll
+         * make use of them later on. */
 
-        nospace = (lua_type (_L, -1) == LUA_TTABLE ||
-                   lua_type (_L, -1) == LUA_TUSERDATA);
+        type = lua_type (_L, -1);
+        nospace = (type == LUA_TTABLE || type == LUA_TUSERDATA ||
+                   type == LUA_TFUNCTION);
+
+        keytype = LUA_TNIL;
+        if (type == LUA_TTABLE) {
+            lua_pushnil(_L);
+            if (lua_next(_L, -2)) {
+                keytype = lua_type (_L, -2);
+                lua_pop (_L, 2);
+            } else {
+                /* There are no keys in the table so we
+                 * won't want to index it.  Add a
+                 * space. */
+
+                nospace = 0;
+            }
+        }
+
+        /* Pop the value, keep the key. */
 
         lua_pop (_L, 1);
 
@@ -275,8 +294,42 @@ static char *table_key_completions (const char *text, int state)
 
             m = strlen(token);
 
-            if (l >= m && !strncmp (token, candidate, m)) {
+            if (l >= m && !strncmp (token, candidate, m)
+#ifdef HIDDEN_KEY_PREFIX
+                && strncmp(candidate, HIDDEN_KEY_PREFIX,
+                           sizeof(HIDDEN_KEY_PREFIX) - 1)
+#endif
+                ) {
                 char *match;
+
+                /* If the candidate has been fully typed (or
+                 * previously completed) consider adding certain
+                 * helpful suffixes. */
+
+#ifndef ALWAYS_APPEND_SUFFIXES
+                if (l == m) {
+#endif
+                    if (type == LUA_TFUNCTION) {
+                        candidate = realloc(candidate, l + 2);
+                        candidate[l] = '(';
+                        candidate[l + 1] = '\0';
+                        l += 1;
+                    } else if (type == LUA_TTABLE) {
+                        if (keytype == LUA_TSTRING) {
+                            candidate = realloc(candidate, l + 2);
+                            candidate[l] = '.';
+                            candidate[l + 1] = '\0';
+                            l += 1;
+                        } else if (keytype != LUA_TNIL) {
+                            candidate = realloc(candidate, l + 2);
+                            candidate[l] = '[';
+                            candidate[l + 1] = '\0';
+                            l += 1;
+                        }
+                    }
+#ifndef ALWAYS_APPEND_SUFFIXES
+                }
+#endif
 
                 if (token > text) {
                     /* Were not completing a global variable.  Put the
@@ -475,7 +528,8 @@ static int execute ()
             if (h == 1) {
                 print_output ("%s%s%s\n", COLOR(3), result, COLOR(0));
             } else {
-                print_output ("%s%d%s: %s%s\n", COLOR(4), h - i + 1, COLOR(3), result, COLOR(0));
+                print_output ("%s%d%s: %s%s\n", COLOR(4), h - i + 1,
+                              COLOR(3), result, COLOR(0));
             }
         }
     }
@@ -490,8 +544,15 @@ static int execute ()
 static char *dump;
 static int length, offset, indent, column, linewidth, ancestors;
 
-#define dump_literal(s) (check_fit(sizeof(s) - 1), strcpy (dump + offset, s), offset += sizeof(s) - 1, column += width(s))
-#define dump_character(c) (check_fit(1), dump[offset] = c, offset += 1, column += 1)
+#define dump_literal(s) (check_fit(sizeof(s) - 1), \
+                         strcpy (dump + offset, s), \
+                         offset += sizeof(s) - 1, \
+                         column += width(s))
+
+#define dump_character(c) (check_fit(1), \
+                           dump[offset] = c, \
+                           offset += 1, \
+                           column += 1)
 
 static int width (const char *s)
 {
