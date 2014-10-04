@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     // Enter interactive mode if requested
     if (options.interactive)
     {
-        luap_setprompts(L, "testgear>", "testgear>>");
+        luap_setprompts(L, "testgear> ", "testgear>> ");
         luap_enter(L);
     }
 
