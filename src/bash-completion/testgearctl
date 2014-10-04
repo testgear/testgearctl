@@ -1,5 +1,5 @@
 #
-# Bash autocompletion script for testgearctl.
+# Bash completion script for testgearctl.
 #
 
 _testgearctl()
