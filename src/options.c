@@ -51,10 +51,10 @@ void print_options_help(char *argv[])
     printf("Usage: %s [<options>] [file]\n", argv[0]);
     printf("\n");
     printf("Options:\n");
-    printf("  --interactive      Enable interactive mode\n");
-    printf("  --stop-on-failure  Stop on failure\n");
-    printf("  --version          Display version\n");
-    printf("  --help             Display help\n");
+    printf("  -i, --interactive      Enable interactive mode\n");
+    printf("  -s, --stop-on-failure  Stop on failure\n");
+    printf("  -v, --version          Display version\n");
+    printf("  -h, --help             Display help\n");
     printf("\n");
 }
 
@@ -83,7 +83,7 @@ void parse_options(int argc, char *argv[])
         int option_index = 0;
 
         // Parse argument using getopt_long
-        c = getopt_long (argc, argv, "", long_options, &option_index);
+        c = getopt_long (argc, argv, "isvh", long_options, &option_index);
 
         // Detect the end of the options
         if (c == -1)
