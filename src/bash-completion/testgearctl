@@ -1,0 +1,45 @@
+#
+# Bash autocompletion script for testgearctl.
+#
+
+_testgearctl()
+{
+    local cur prev opts base
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    #  The options we'll complete.
+    opts="-i --interactive \
+          -d --stop-on-failure \
+          -v --version \
+          -h --help"
+
+    #  Complete the options.
+    case "${prev}" in
+        -i | --interactive)
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        -s | --stop-on-failure)
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        -v | --version)
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        -h | --help)
+            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            return 0
+            ;;
+        *)
+        ;;
+    esac
+
+   COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+   return 0
+}
+
+# Bind completion to testgearctl command
+complete -o default -F _testgearctl testgearctl
