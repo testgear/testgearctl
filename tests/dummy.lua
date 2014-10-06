@@ -8,7 +8,7 @@
 
 -- tg
 -- Dummy test case
-device = connect("127.0.0.1")
+device = connect("tcp://127.0.0.1:8000")
 device.list_plugins()
 device.load("dummy")
 -- tg

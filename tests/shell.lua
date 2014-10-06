@@ -3,7 +3,7 @@
 --
 
 -- tg
-device = connect("127.0.0.1")
+device = connect("tcp://127.0.0.1:8000")
 device.load("shell")
 -- tg
 device.shell.command = "touch bla.txt"

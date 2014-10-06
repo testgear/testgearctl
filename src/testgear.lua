@@ -92,6 +92,8 @@ function connect (hostname)
     }
 
     self._handle = tg_connect(hostname)
+    if (self._handle < 0) then error(tg_error()) end
+
     print("Connected to " .. hostname)
 
     function self.load (name)
