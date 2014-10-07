@@ -13,7 +13,7 @@ CFLAGS+= -D_GNU_SOURCE
 # keep the auto-completer from considering certain table keys (and
 # hence global variables) for completion.
 
-CFLAGS+= '-DHIDDEN_KEY_PREFIX="_"'
+# CFLAGS+= '-DHIDDEN_KEY_PREFIX="_"'
 
 # When completing certain kinds of values, such as tables or
 # functions, the completer also appends certain useful suffixes such
@@ -26,7 +26,7 @@ CFLAGS+= '-DHIDDEN_KEY_PREFIX="_"'
 # Uncomment the following line to make the completer always append
 # these suffixes.
 
-CFLAGS+= -DALWAYS_APPEND_SUFFIXES
+# CFLAGS+= -DALWAYS_APPEND_SUFFIXES
 
 LDFLAGS=-lreadline -lhistory
 

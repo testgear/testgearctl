@@ -243,9 +243,8 @@ static char *table_key_completions (const char *text, int state)
                 keytype = lua_type (_L, -2);
                 lua_pop (_L, 2);
             } else {
-                /* There are no keys in the table so we
-                 * won't want to index it.  Add a
-                 * space. */
+                /* There are no keys in the table so we won't want to
+                 * index it.  Add a space. */
 
                 nospace = 0;
             }
@@ -1136,11 +1135,6 @@ void luap_enter(lua_State *L)
             continue;
         }
 
-#ifdef HAVE_READLINE_HISTORY
-        /* Add the line to the history if non-empty. */
-            add_history (line);
-#endif
-
         /* Add/copy the line to the buffer. */
 
         if (incomplete) {
@@ -1198,12 +1192,14 @@ void luap_enter(lua_State *L)
                     !strncmp (message + n - k, EOF_MARKER, k)) {
                     incomplete = 1;
                 } else {
-                    print_error ("%s%s%s\n", COLOR(1), lua_tostring (_L, -1), COLOR(0));
+                    print_error ("%s%s%s\n", COLOR(1), lua_tostring (_L, -1),
+                                 COLOR(0));
                 }
 
                 lua_pop (_L, 1);
             } else if (status == LUA_ERRMEM) {
-                print_error ("%s%s%s\n", COLOR(1), lua_tostring (_L, -1), COLOR(0));
+                print_error ("%s%s%s\n", COLOR(1), lua_tostring (_L, -1),
+                             COLOR(0));
                 lua_pop (_L, 1);
             } else {
                 /* Try to execute the loaded chunk. */
@@ -1212,6 +1208,14 @@ void luap_enter(lua_State *L)
                 incomplete = 0;
             }
         }
+
+#ifdef HAVE_READLINE_HISTORY
+        /* Add the line to the history if non-empty. */
+
+        if (!incomplete) {
+            add_history (buffer);
+        }
+#endif
 
         free (prepended);
         free (line);
