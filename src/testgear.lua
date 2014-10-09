@@ -112,7 +112,7 @@ function connect (hostname)
             return -1
         end
 
-        status = tg_load(_handle, name)
+        status = tg_load(self._handle, name)
         if (status < 0) then
             print("Error: " .. tg_error())
             return -1
