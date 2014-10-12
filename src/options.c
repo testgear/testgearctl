@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <getopt.h>
 #include "testgear/options.h"
+#include "config.h"
 
 struct options_t options =
 {
