@@ -419,7 +419,7 @@ static int run(lua_State *L)
     return 1;
 }
 
-int luaopen_testgear(lua_State *L)
+int luaopen_testgearlua(lua_State *L)
 {
     lua_register(L, "tg_connect", connect);
     lua_register(L, "tg_disconnect", disconnect);

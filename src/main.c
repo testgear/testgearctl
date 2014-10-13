@@ -43,6 +43,7 @@
 
 int main(int argc, char *argv[])
 {
+    int status;
     char command[_POSIX_ARG_MAX];
     lua_State *L;
 
@@ -59,7 +60,12 @@ int main(int argc, char *argv[])
     parse_options(argc, argv);
 
     // Include test gear lua API
-    (void) luaL_dofile(L, DATADIR "/testgear.lua");
+    status = luaL_dofile(L, DATADIR "/testgear.lua");
+    if (status != 0)
+    {
+        printf("Error: %s\n", lua_tostring(L,-1));
+        return EXIT_FAILURE;
+    }
 
     // Parse script file if provided
     if (strlen(options.filename) > 0)
@@ -72,5 +78,5 @@ int main(int argc, char *argv[])
         luap_enter(L);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

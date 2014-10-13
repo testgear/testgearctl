@@ -1,7 +1,7 @@
 bin_PROGRAMS = testgearctl
 
 pkglib_LTLIBRARIES = testgearlua.la
-testgearlua_la_SOURCES = testgear-lua.c
+testgearlua_la_SOURCES = testgearlua.c
 testgearlua_la_CFLAGS = -I$(srcdir)/lua-5.2.3/install/include
 testgearlua_la_LDFLAGS = -module -avoid-version -shared -export-dynamic $(srcdir)/lua-5.2.3/install/lib/liblua.a -lc -lm
 
