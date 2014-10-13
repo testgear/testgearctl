@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     parse_options(argc, argv);
 
     // Include test gear lua API
-    (void) luaL_dofile(L, "testgear.lua");
+    (void) luaL_dofile(L, DATADIR "/testgear.lua");
 
     // Parse script file if provided
     if (strlen(options.filename) > 0)

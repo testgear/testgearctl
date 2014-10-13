@@ -1,11 +1,10 @@
-#!lua-5.2.3/src/lua
-
 --
 -- Test Gear Lua API
 --
 
 -- Include Test Gear lua module
-require("testgear-lua")
+package.cpath = package.cpath .. ";@pkglibdir@/?.so;"
+require("testgearlua")
 
 -- Initialize fail state
 _fail = false

@@ -3,10 +3,10 @@ AC_INIT([testgearctl], [0.2], [], [testgearctl], [http://github.com/testgear/tes
 AC_CONFIG_HEADERS([src/include/config.h])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz no-dist-gzip -Wall -Werror subdir-objects])
 AM_SILENT_RULES([yes])
-AC_PROG_RANLIB
 AM_PROG_AR
 AC_PROG_CC
 AC_PROG_INSTALL
+LT_INIT
 AC_LANG([C])
 AC_CHECK_LIB([testgear], [tg_connect], [], [AC_MSG_ERROR(libtestgear not found)])
 AC_CHECK_LIB([dl], [dlopen], [], [AC_MSG_ERROR(libdl not found)])

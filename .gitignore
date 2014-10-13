@@ -1,5 +1,4 @@
 *.tar.xz
-src/*.o
 src/testgearctl
 Makefile.in
 Makefile
@@ -15,6 +14,7 @@ src/Makefile
 config.log
 config.status
 .deps/
+.libs/
 src/include/config.h
 src/include/config.h.in
 src/include/config.h.in~
@@ -24,3 +24,11 @@ src/include/stamp-h1
 /ar-lib
 .dirstamp
 *.a
+*.o
+*.la
+*.lo
+/ltmain.sh
+/config.guess
+/config.sub
+/libtool
+/src/testgear.lua
