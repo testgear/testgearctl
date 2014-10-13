@@ -4,7 +4,7 @@
 
 -- Include Test Gear lua module
 package.cpath = package.cpath .. ";@pkglibdir@/?.so;"
-require("testgear")
+require("testgearlua")
 
 -- Initialize fail state
 _fail = false
