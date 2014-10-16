@@ -11,7 +11,7 @@ _testgearctl()
 
     #  The options we'll complete.
     opts="-i --interactive \
-          -d --stop-on-failure \
+          -s --stop-on-failure \
           -v --version \
           -h --help"
 
