@@ -32,7 +32,7 @@
 #include <lauxlib.h>
 #include <lualib.h>
 #include <string.h>
-#include "testgear.h"
+#include "testgear/testgear.h"
 
 // lua: handle = tg_connect(name)
 static int connect(lua_State *L)
