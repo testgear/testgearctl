@@ -91,7 +91,7 @@ function connect (hostname)
     }
 
     self._handle = tg_connect(hostname)
-    if (self._handle < 0) then error(tg_error()) end
+    if (self._handle < 0) then error(tg_error(), 0) end
 
     print("Connected to " .. hostname)
 
@@ -107,13 +107,13 @@ function connect (hostname)
         end
 
         if (type(name) ~= "string") then
-            print("Error: Plugin name must be a string")
+            error("Error: Plugin name must be a string", 0)
             return -1
         end
 
         status = tg_load(self._handle, name)
         if (status < 0) then
-            print("Error: " .. tg_error())
+            error("Error: " .. tg_error(), 0)
             return -1
         end
 
@@ -173,13 +173,13 @@ function connect (hostname)
     function self.unload (name)
         local status
         if (type(name) ~= "string") then
-            print("Error: Plugin name must be a string")
+            error("Error: Plugin name must be a string", 0)
             return -1
         end
 
         status = tg_unload(self._handle, name)
         if (status < 0) then
-            print("Error: " .. tg_error())
+            error("Error: " .. tg_error(), 0)
             return -1
         end
 

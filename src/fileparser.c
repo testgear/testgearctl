@@ -94,6 +94,8 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
         lua_pop(L, 1);  // pop error message from the stack
         printf("\n                                                   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
         fail_count++;
+        if (options.stop_on_failure)
+            return 1;
     } else
     {
         lua_getglobal(L, "_reset_fail");
