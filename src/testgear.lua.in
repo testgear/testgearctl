@@ -32,9 +32,9 @@ function connect (hostname)
                 local var_type = t._type[k]
 
                 if (type(rawget(t,k)) == "function") then
---                    print("wrote preexisting function " .. k)
+                    -- Preexisting function written
                 else
---                    print("wrote preexisting variable " .. k)
+                    -- Preexisting variable written
                     if (var_type == "char") then
                         tg_set_char(handle, name, v)
                     elseif (var_type == "short") then
@@ -52,7 +52,8 @@ function connect (hostname)
                     end
                 end
             end
---            rawset(t,k,v)
+            -- Uncomment to write original value (normal lua behaviour)
+            -- rawset(t,k,v)
         end,
 
         __readindex = function (t,k)
@@ -63,13 +64,13 @@ function connect (hostname)
                 local var_type = t._type[k]
 
                 if (type(rawget(t,k)) == "function") then
---                    print("read preexisting function " .. k)
+                    -- Preexisting function read
                     function wrapper_function ()
                         return tg_run(handle, name)
                     end
                     return wrapper_function
                 else
---                    print("read preexisting variable " .. k)
+                    -- Preexisting variable read
                     if (var_type == "char") then
                         return (tg_get_char(handle, name))
                     elseif (var_type == "short") then
