@@ -64,9 +64,10 @@ function connect (hostname)
 
                 if (type(rawget(t,k)) == "function") then
 --                    print("read preexisting function " .. k)
-                    result = tg_run(handle, name)
---                    print(result)
---                    return result
+                    function wrapper_function ()
+                        return tg_run(handle, name)
+                    end
+                    return wrapper_function
                 else
 --                    print("read preexisting variable " .. k)
                     if (var_type == "char") then
