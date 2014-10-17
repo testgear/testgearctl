@@ -70,6 +70,13 @@ function connect (hostname)
                     end
                     return wrapper_function
                 else
+                    local function round(val, decimal)
+                        if (decimal) then
+                            return math.floor((val * 10^decimal) + 0.5) / (10^decimal)
+                        else
+                            return math.floor(val+0.5)
+                        end
+                    end
                     -- Preexisting variable read
                     if (var_type == "char") then
                         return (tg_get_char(handle, name))
@@ -80,7 +87,12 @@ function connect (hostname)
                     elseif (var_type == "long") then
                         return (tg_get_long(handle, name))
                     elseif (var_type == "float") then
-                        return (tg_get_float(handle, name))
+                        -- Conversion from float to the internal lua number
+                        -- representation (double) destroys the returned
+                        -- number. To mitigate this issue we round the number
+                        -- back to the 6 decimal digit precision that float
+                        -- offers.
+                        return (round(tg_get_float(handle, name), 6))
                     elseif (var_type == "double") then
                         return (tg_get_double(handle, name))
                     elseif (var_type == "string") then

@@ -24,8 +24,8 @@ if (device.dummy.int0 ~= 424242) then fail() end
 device.dummy.long0 = 4242424242
 if (device.dummy.long0 ~= 4242424242) then fail() end
 -- tg
-device.dummy.float0 = 42.424242
-if (device.dummy.float0 ~= 42.424242) then fail() end
+device.dummy.float0 = 4.424242
+if (device.dummy.float0 ~= 4.424242) then fail() end
 -- tg
 device.dummy.double0 = 42.4242424242
 if (device.dummy.double0 ~= 42.4242424242) then fail() end
