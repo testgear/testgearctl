@@ -82,7 +82,7 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
     static int count = 0;
 
     count++;
-    printf(ANSI_COLOR_TEST_CASE "\n== Test %d/%d ===============================================\n\n" ANSI_COLOR_RESET, count, total_count);
+    printf(ANSI_COLOR_TEST_CASE "\n== Test %3d/%3d =====================================================\n\n" ANSI_COLOR_RESET, count, total_count);
     print_chunk(chunk);
     sprintf(test, "Test %d", count);
 
@@ -92,7 +92,7 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
     {
         fprintf(stderr, ANSI_COLOR_RESET "%s\n", lua_tostring(L, -1));
         lua_pop(L, 1);  // pop error message from the stack
-        printf("\n                                                   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+        printf("\n                                                         " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
         fail_count++;
         if (options.stop_on_failure)
             return 1;
@@ -104,14 +104,14 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
 
         if (fail)
         {
-            printf("\n                                                   " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
+            printf("\n                                                         " ANSI_COLOR_FAIL " FAIL " ANSI_COLOR_RESET "\n");
             fail_count++;
             if (options.stop_on_failure)
                 return 1;
         }
         else
         {
-            printf("\n                                                   " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
+            printf("\n                                                         " ANSI_COLOR_PASS " PASS " ANSI_COLOR_RESET "\n");
             pass_count++;
         }
     }
@@ -207,11 +207,11 @@ int parse_file(char *filename, lua_State *L)
 
     // Print summary
 
-    printf(ANSI_COLOR_TEST_CASE "\n== Summary ================================================\n\n\n");
+    printf(ANSI_COLOR_TEST_CASE "\n== Summary ==========================================================\n\n\n");
 
-    printf("                               TOTAL | PASS | FAIL \n");
-    printf("      -------------------------------+------+------\n");
-    printf("       Test count                %3d |  %3d |  %3d \n", total_count, pass_count, fail_count);
+    printf("                                    TOTAL | PASS | FAIL \n");
+    printf("           -------------------------------+------+------\n");
+    printf("            Test count                %3d |  %3d |  %3d \n", total_count, pass_count, fail_count);
     printf("\n\n");
 
     // Stop clock

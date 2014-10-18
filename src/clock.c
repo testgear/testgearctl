@@ -65,5 +65,5 @@ void show_elapsed_time(void)
    int minutes = (seconds - hours * 3600) / 60;
    seconds = seconds - hours * 3600 - minutes * 60;
 
-   printf("       Elapsed time: %2dh %2dm %2.0fs\n\n" ANSI_COLOR_RESET, hours, minutes, seconds);
+   printf("            Elapsed time: %2dh %2dm %2.0fs\n\n" ANSI_COLOR_RESET, hours, minutes, seconds);
 }
