@@ -9,7 +9,7 @@ require("testgear")
 
 
 -- Connect to Test Gear device server
-device = tg_connect("127.0.0.1")
+device = tg_connect("tcp://127.0.0.1:8000")
 
 -- List available plugins
 plugins = tg_list_plugins(device)
