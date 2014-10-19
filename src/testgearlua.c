@@ -28,6 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <unistd.h>
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -419,6 +420,27 @@ static int run(lua_State *L)
     return 1;
 }
 
+// lua: sleep(seconds)
+static int sleep_(lua_State *L)
+{
+    long seconds = lua_tointeger(L, 1);
+
+    sleep(seconds);
+
+    return 0;
+}
+
+// lua: msleep(miliseconds)
+static int msleep(lua_State *L)
+{
+    long mseconds = lua_tointeger(L, 1);
+    long useconds = mseconds * 1000;
+
+    usleep(useconds);
+
+    return 0;
+}
+
 int luaopen_testgearlua(lua_State *L)
 {
     lua_register(L, "tg_connect", connect);
@@ -443,5 +465,7 @@ int luaopen_testgearlua(lua_State *L)
     lua_register(L, "tg_set_string", set_string);
     lua_register(L, "tg_run", run);
     lua_register(L, "tg_error", error);
+    lua_register(L, "sleep", sleep_);
+    lua_register(L, "msleep", msleep);
     return 0;
 }
