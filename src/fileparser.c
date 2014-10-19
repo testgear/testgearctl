@@ -82,7 +82,19 @@ static int process_chunk(lua_State *L, char *chunk, int total_count)
     static int count = 0;
 
     count++;
-    printf(ANSI_COLOR_TEST_CASE "\n== Test %3d/%3d =====================================================\n\n" ANSI_COLOR_RESET, count, total_count);
+    printf(ANSI_COLOR_TEST_CASE "\n== Test ");
+    printf("%d/%d =====================================================" ANSI_COLOR_RESET, count, total_count);
+    // Adjust bar length
+    if (count < 10)
+        printf("==");
+    else if (count < 100)
+        printf("=");
+    if (total_count < 10)
+        printf("==");
+    else if (total_count < 100)
+        printf("=");
+    printf("\n\n" ANSI_COLOR_RESET);
+
     print_chunk(chunk);
     sprintf(test, "Test %d", count);
 
