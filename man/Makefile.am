@@ -1,1 +1,1 @@
-man_MANS = testgearctl.1
+dist_man_MANS = testgearctl.1
