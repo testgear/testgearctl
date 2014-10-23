@@ -420,6 +420,26 @@ static int run(lua_State *L)
     return 1;
 }
 
+// lua: description = tg_describe(handle, name)
+static int describe(lua_State *L)
+{
+    int result;
+    int cd = lua_tointeger(L, 1);
+    const char *name = lua_tostring(L, 2);
+    char description[65536] = "";
+
+    // Get description
+    result = tg_describe(cd, name, (char *) &description);
+
+    if (result == 0)
+    {
+        // Return description
+        lua_pushstring(L, description);
+        return 1;
+    }
+    return 0;
+}
+
 // lua: sleep(seconds)
 static int sleep_(lua_State *L)
 {
@@ -464,6 +484,7 @@ int luaopen_testgearlua(lua_State *L)
     lua_register(L, "tg_get_string", get_string);
     lua_register(L, "tg_set_string", set_string);
     lua_register(L, "tg_run", run);
+    lua_register(L, "tg_describe", describe);
     lua_register(L, "tg_error", error);
     lua_register(L, "sleep", sleep_);
     lua_register(L, "msleep", msleep);

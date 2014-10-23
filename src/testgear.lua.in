@@ -139,6 +139,9 @@ function connect (hostname)
         -- Add type lookup table
         self[name]._type = {}
 
+        -- Add help lookup table
+        self[name]._help = {}
+
         -- Save parent
         self[name]._parent = self
 
@@ -153,30 +156,39 @@ function connect (hostname)
             if (word[2] == "0") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "char"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "1") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "short"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "2") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "int"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "3") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "long"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "4") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "float"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "5") then
                 self[name][word[1]] = 0
                 self[name]._type[word[1]] = "double"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "6") then
                 self[name][word[1]] = ""
                 self[name]._type[word[1]] = "string"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "7") then
                 self[name][word[1]] = ""
                 self[name]._type[word[1]] = "data"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             elseif (word[2] == "8") then
                 self[name][word[1]] = function () end
                 self[name]._type[word[1]] = "command"
+                self[name]._help[word[1]] = tg_describe(self._handle, name .. '.' .. word[1])
             end
         end
 
