@@ -142,6 +142,9 @@ function connect (hostname)
         -- Add help lookup table
         self[name]._help = {}
 
+        -- Add help for plugin
+        self[name]._help_self = tg_describe(self._handle, name .. ".description")
+
         -- Save parent
         self[name]._parent = self
 
