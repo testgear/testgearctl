@@ -16,13 +16,13 @@ function connect (hostname)
     local self =
     {
         __index = function (t,k)
-            print("read variable " .. k)
+            -- First time read of key
             return rawget(t,k)
         end,
 
         __newindex = function (t,k,v)
+            -- First time write of key
             rawset(t,k,v)
-            print("wrote variable " .. k)
         end,
 
         __writeindex = function (t,k,v)
