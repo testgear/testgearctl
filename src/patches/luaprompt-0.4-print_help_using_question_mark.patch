@@ -1,0 +1,179 @@
+From 98f172c63d04cf0d97510066223966242a90c975 Mon Sep 17 00:00:00 2001
+From: Martin Lund <martin.lund@keep-it-simple.com>
+Date: Sat, 25 Oct 2014 11:41:07 +0200
+Subject: [PATCH] Add support for printing help strings using '?'
+
+This patch adds support for printing descriptive help strings when a '?'
+is appended.
+
+If questioning a table it simply looks up and prints the value of the
+key string named _self_help of the same table.
+
+If questioning a non-table it will try to look up the name of the
+corresponding key in the _help table of the parent if present.
+
+Example:
+
+dummy = { _help_self = "I'm a dummy", int0 = 42 }
+dummy._help = { int0 = "Integer 0 description" }
+
+$ dummy ?
+I'm a dummy
+
+$ dummy.int0 ?
+Integer 0 description
+
+$ dummy.int0
+42
+---
+ src/luaprompt-0.4/prompt.c | 109 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 105 insertions(+), 4 deletions(-)
+
+diff --git a/src/luaprompt-0.4/prompt.c b/src/luaprompt-0.4/prompt.c
+index a16f9a7..db2fdd7 100644
+--- a/src/luaprompt-0.4/prompt.c
++++ b/src/luaprompt-0.4/prompt.c
+@@ -30,6 +30,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <unistd.h>
++#include <stdbool.h>
+ 
+ #ifdef HAVE_IOCTL
+ #include <sys/ioctl.h>
+@@ -1092,7 +1093,8 @@ void luap_setname(lua_State *L, const char *name)
+ void luap_enter(lua_State *L)
+ {
+     int incomplete = 0, s = 0, t = 0, l;
+-    char *line, *prepended;
++    char *line, *prepended, *qbuffer;
++    bool question = false;
+ 
+     /* Save the state since it needs to be passed to some readline
+      * callbacks. */
+@@ -1161,12 +1163,105 @@ void luap_enter(lua_State *L)
+         /* Try to execute the line with a return prepended first.  If
+          * this works we can show returned values. */
+ 
++        /* Is there a '?' in the end of the line? */
++        int length = strlen(buffer);
++        if (buffer[length-1] == '?')
++        {
++            /* Save buffer for readline history */
++            qbuffer = strdup(buffer);
++
++            /* Remove question mark */
++            buffer[--length] = 0;
++
++            /* Remove any trailing whitespace(s) */
++            while (buffer[length-1] == ' ')
++                buffer[--length] = 0;
++
++            question = true;
++        } else
++            question = false;
++
+         l = asprintf (&prepended, "return %s", buffer);
+ 
+         if (luaL_loadbuffer(_L, prepended, l, chunkname) == LUA_OK) {
+-            execute();
+ 
+-            incomplete = 0;
++            /* If question asked, lookup available help */
++            if (question)
++            {
++                int h;
++
++                /* Save stack */
++                h = lua_gettop (_L);
++
++                /* Evaluate line */
++                lua_pcall (_L, 0, 1, 0);
++
++                /* In case of table, print _help_self string if available */
++                if (lua_istable(_L, -1))
++                {
++                    lua_getfield(_L, -1, "_help_self");
++
++                    if (lua_isstring(_L, -1))
++                        print_output("%s\n", lua_tostring(_L, -1));
++                } else
++                {
++                    /* In case of non-table, find first and last part separated
++                     * by '.'.  Assume that the last part is the name of the
++                     * element (number or function) that we need to look up the
++                     * help description for in the _help table of the parent
++                     * (first part).
++                     */
++
++                    /* Find first and last part separated by '.' */
++                    char *buffer = strdup(prepended);
++                    char *last = buffer;
++                    char *first = NULL;
++                    int i;
++
++                    for (i=strlen(buffer); i >= 0; i--)
++                    {
++                        if (buffer[i] == '.')
++                        {
++                            last = &buffer[i+1];
++                            first = buffer;
++                            buffer[i] = 0;
++                            break;
++                        }
++                    }
++
++                    /* Look up help if we have both first and last part */
++                    if ((first != NULL) && (last != NULL))
++                    {
++                        /* Evaluate parent (first part) */
++                        luaL_loadstring(_L, first);
++                        lua_pcall (_L, 0, 1, 0);
++
++                        if (lua_istable(_L, -1))
++                        {
++                            /* Retrieve _help table */
++                            lua_getfield(_L, -1, "_help");
++
++                            if (lua_istable(_L, -1))
++                            {
++                                /* Print help of element name (last part) */
++                                lua_getfield(_L, -1, last);
++                                if (lua_isstring(_L, -1))
++                                    print_output("%s\n", lua_tostring(_L, -1));
++                            }
++                        }
++                    }
++
++                    free(buffer);
++                }
++
++                /* Restore stack */
++                lua_settop(_L, h);
++            } else
++            {
++                execute();
++
++                incomplete = 0;
++            }
+         } else {
+             lua_pop (_L, 1);
+ 
+@@ -1213,7 +1308,13 @@ void luap_enter(lua_State *L)
+         /* Add the line to the history if non-empty. */
+ 
+         if (!incomplete) {
+-            add_history (buffer);
++            if (question)
++            {
++                add_history(qbuffer);
++                free(qbuffer);
++            }
++            else
++                add_history (buffer);
+         }
+ #endif
+ 
+-- 
+2.1.0
+
