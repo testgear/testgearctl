@@ -1,38 +1,6 @@
-From 98f172c63d04cf0d97510066223966242a90c975 Mon Sep 17 00:00:00 2001
-From: Martin Lund <martin.lund@keep-it-simple.com>
-Date: Sat, 25 Oct 2014 11:41:07 +0200
-Subject: [PATCH] Add support for printing help strings using '?'
-
-This patch adds support for printing descriptive help strings when a '?'
-is appended.
-
-If questioning a table it simply looks up and prints the value of the
-key string named _self_help of the same table.
-
-If questioning a non-table it will try to look up the name of the
-corresponding key in the _help table of the parent if present.
-
-Example:
-
-dummy = { _help_self = "I'm a dummy", int0 = 42 }
-dummy._help = { int0 = "Integer 0 description" }
-
-$ dummy ?
-I'm a dummy
-
-$ dummy.int0 ?
-Integer 0 description
-
-$ dummy.int0
-42
----
- src/luaprompt-0.4/prompt.c | 109 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 105 insertions(+), 4 deletions(-)
-
-diff --git a/src/luaprompt-0.4/prompt.c b/src/luaprompt-0.4/prompt.c
-index a16f9a7..db2fdd7 100644
---- a/src/luaprompt-0.4/prompt.c
-+++ b/src/luaprompt-0.4/prompt.c
+diff -Naur luaprompt-0.4.orig/prompt.c luaprompt-0.4/prompt.c
+--- luaprompt-0.4.orig/prompt.c	2014-10-06 16:59:57.000000000 +0200
++++ luaprompt-0.4/prompt.c	2014-10-28 11:18:00.993009017 +0100
 @@ -30,6 +30,7 @@
  #include <string.h>
  #include <ctype.h>
@@ -41,7 +9,7 @@ index a16f9a7..db2fdd7 100644
  
  #ifdef HAVE_IOCTL
  #include <sys/ioctl.h>
-@@ -1092,7 +1093,8 @@ void luap_setname(lua_State *L, const char *name)
+@@ -1092,7 +1093,8 @@
  void luap_enter(lua_State *L)
  {
      int incomplete = 0, s = 0, t = 0, l;
@@ -51,22 +19,26 @@ index a16f9a7..db2fdd7 100644
  
      /* Save the state since it needs to be passed to some readline
       * callbacks. */
-@@ -1161,12 +1163,105 @@ void luap_enter(lua_State *L)
+@@ -1161,12 +1163,102 @@
          /* Try to execute the line with a return prepended first.  If
           * this works we can show returned values. */
  
-+        /* Is there a '?' in the end of the line? */
++        /* Save buffer for readline history */
++        qbuffer = strdup(buffer);
++
++        /* Remove any trailing whitespace(s) */
 +        int length = strlen(buffer);
++        while (isspace(buffer[length-1]))
++            buffer[--length] = 0;
++
++        /* Is there a '?' in the end of the line? */
 +        if (buffer[length-1] == '?')
 +        {
-+            /* Save buffer for readline history */
-+            qbuffer = strdup(buffer);
-+
 +            /* Remove question mark */
 +            buffer[--length] = 0;
 +
 +            /* Remove any trailing whitespace(s) */
-+            while (buffer[length-1] == ' ')
++            while (isspace(buffer[length-1]))
 +                buffer[--length] = 0;
 +
 +            question = true;
@@ -108,19 +80,12 @@ index a16f9a7..db2fdd7 100644
 +
 +                    /* Find first and last part separated by '.' */
 +                    char *buffer = strdup(prepended);
-+                    char *last = buffer;
-+                    char *first = NULL;
-+                    int i;
-+
-+                    for (i=strlen(buffer); i >= 0; i--)
++                    char *first = buffer;
++                    char *last = strrchr(buffer, '.');
++                    if (last != NULL)
 +                    {
-+                        if (buffer[i] == '.')
-+                        {
-+                            last = &buffer[i+1];
-+                            first = buffer;
-+                            buffer[i] = 0;
-+                            break;
-+                        }
++                        *last = 0;
++                        last++;
 +                    }
 +
 +                    /* Look up help if we have both first and last part */
@@ -159,21 +124,19 @@ index a16f9a7..db2fdd7 100644
          } else {
              lua_pop (_L, 1);
  
-@@ -1213,7 +1308,13 @@ void luap_enter(lua_State *L)
+@@ -1213,10 +1305,14 @@
          /* Add the line to the history if non-empty. */
  
          if (!incomplete) {
 -            add_history (buffer);
 +            if (question)
-+            {
-+                add_history(qbuffer);
-+                free(qbuffer);
-+            }
++                add_history (qbuffer);
 +            else
 +                add_history (buffer);
          }
  #endif
  
--- 
-2.1.0
-
++        free (qbuffer);
+         free (prepended);
+         free (line);
+     }

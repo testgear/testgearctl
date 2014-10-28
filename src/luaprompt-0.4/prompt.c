@@ -1163,18 +1163,22 @@ void luap_enter(lua_State *L)
         /* Try to execute the line with a return prepended first.  If
          * this works we can show returned values. */
 
-        /* Is there a '?' in the end of the line? */
+        /* Save buffer for readline history */
+        qbuffer = strdup(buffer);
+
+        /* Remove any trailing whitespace(s) */
         int length = strlen(buffer);
+        while (isspace(buffer[length-1]))
+            buffer[--length] = 0;
+
+        /* Is there a '?' in the end of the line? */
         if (buffer[length-1] == '?')
         {
-            /* Save buffer for readline history */
-            qbuffer = strdup(buffer);
-
             /* Remove question mark */
             buffer[--length] = 0;
 
             /* Remove any trailing whitespace(s) */
-            while (buffer[length-1] == ' ')
+            while (isspace(buffer[length-1]))
                 buffer[--length] = 0;
 
             question = true;
@@ -1214,19 +1218,12 @@ void luap_enter(lua_State *L)
 
                     /* Find first and last part separated by '.' */
                     char *buffer = strdup(prepended);
-                    char *last = buffer;
-                    char *first = NULL;
-                    int i;
-
-                    for (i=strlen(buffer); i >= 0; i--)
+                    char *first = buffer;
+                    char *last = strrchr(buffer, '.');
+                    if (last != NULL)
                     {
-                        if (buffer[i] == '.')
-                        {
-                            last = &buffer[i+1];
-                            first = buffer;
-                            buffer[i] = 0;
-                            break;
-                        }
+                        *last = 0;
+                        last++;
                     }
 
                     /* Look up help if we have both first and last part */
@@ -1309,15 +1306,13 @@ void luap_enter(lua_State *L)
 
         if (!incomplete) {
             if (question)
-            {
-                add_history(qbuffer);
-                free(qbuffer);
-            }
+                add_history (qbuffer);
             else
                 add_history (buffer);
         }
 #endif
 
+        free (qbuffer);
         free (prepended);
         free (line);
     }
