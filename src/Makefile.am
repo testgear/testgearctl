@@ -42,6 +42,7 @@ libprompt_a_CFLAGS = -Wextra \
 do_subst = sed -e 's,[@]pkglibdir[@],$(pkglibdir),g'
 testgear.lua: testgear.lua.in
 	$(do_subst) < $(srcdir)/testgear.lua.in > testgear.lua
+	chmod +x testgear.lua
 
 bashcompletiondir=$(sysconfdir)/bash_completion.d
 dist_bashcompletion_DATA=bash-completion/testgearctl
