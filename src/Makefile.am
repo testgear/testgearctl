@@ -23,11 +23,11 @@ testgearctl_SOURCES = clock.c \
                       lua-5.2.3/doc/*.1 \
                       testgear.lua.in
 
-testgearctl_CFLAGS = -I $(srcdir)/lua-5.2.3/install/include -I $(srcdir)/luaprompt-0.4 -DDATADIR=\"$(pkgdatadir)\"
+testgearctl_CFLAGS = -I $(srcdir)/lua-5.2.3/install/include -I $(srcdir)/luaprompt-0.5 -DDATADIR=\"$(pkgdatadir)\"
 testgearctl_LDADD = libprompt.a lua-5.2.3/install/lib/liblua.a -ltestgear -lm -ldl -lreadline -lhistory
 noinst_LIBRARIES = libprompt.a
-libprompt_a_SOURCES = luaprompt-0.4/prompt.c \
-                      luaprompt-0.4/prompt.h
+libprompt_a_SOURCES = luaprompt-0.5/prompt.c \
+                      luaprompt-0.5/prompt.h
 libprompt_a_CFLAGS = -Wextra \
                      -Wno-unused-parameter \
                      -DHAVE_ASPRINTF \
@@ -35,8 +35,11 @@ libprompt_a_CFLAGS = -Wextra \
                      -DHAVE_READLINE_READLINE_H \
                      -DHAVE_READLINE_HISTORY \
                      -DHAVE_READLINE_HISTORY_H \
+                     -DCOMPLETE_KEYWORDS \
+                     -DCOMPLETE_TABLE_KEYS \
                      -D_GNU_SOURCE '-DHIDDEN_KEY_PREFIX="_"' \
                      -DALWAYS_APPEND_SUFFIXES \
+                     -DNO_MODULE_LOAD \
                      -I $(srcdir)/lua-5.2.3/install/include
 
 do_subst = sed -e 's,[@]pkglibdir[@],$(pkglibdir),g'
